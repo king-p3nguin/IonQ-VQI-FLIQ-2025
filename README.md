@@ -1,6 +1,6 @@
 # IonQ and Vanderbilt Quantum Initiative Presents: FLIQ 2025 Challenge - MAX-CUT: Ground State at Minimal Cost
 
-Welcome to a deep dive into quantum optimization with IonQ and Vanderbilt Quantum Initiative! This challenge focuses on tackling the **Maximum Cut (MaxCut)** problem, a well-known NP-hard combinatorial optimization task. Participants will explore and apply a pioneering **variational Quantum Imaginary Time Evolution (varQITE)** algorithm.
+Welcome to a deep dive into quantum optimization with IonQ and Vanderbilt Quantum Initiative! This challenge focuses on tackling the **Maximum Cut (MaxCut)** problem, a well-known NP-hard combinatorial optimization task. Participants will explore and apply mighty **variational Quantum Imaginary Time Evolution (varQITE)** algorithm.
 
 ## Challenge Overview
 
