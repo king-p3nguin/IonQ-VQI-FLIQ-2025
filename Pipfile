@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = false
+name = "pip_conf_index_global"
+
+[packages]
+qiskit = "*"
+qiskit-aer = "*"
+networkx = "*"
+numpy = "*"
+pandas = "*"
+pylatexenc = "*"
+ipykernel = "*"
+matplotlib = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
