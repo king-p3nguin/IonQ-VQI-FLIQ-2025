@@ -12,6 +12,8 @@ pandas = "*"
 pylatexenc = "*"
 ipykernel = "*"
 matplotlib = "*"
+black = {extras = ["jupyter"], version = "*"}
+requests = "*"
 
 [dev-packages]
 
