@@ -106,53 +106,29 @@ num_steps=20 #number of QITE steps
 lr=0.1 #learning rate
 
 def build_ansatz(graph: nx.Graph) -> QuantumCircuit:
-    ansatz = QuantumCircuit(graph.number_of_nodes())
-    ansatz.h(range(graph.number_of_nodes()))
-    num_rounds = 2
+    n_nodes = graph.number_of_nodes()
+    n_edges = graph.number_of_edges()
+    ansatz = QuantumCircuit(n_nodes)
+    ansatz.h(range(n_nodes))
 
-    for round in range(num_rounds):
-        first_round = []
-
-        random_root = random.choice(list(graph.nodes))
-        graph_bfs = nx.bfs_tree(graph, source=random_root)
-        theta = ParameterVector(fr"$\theta_{round}$", graph_bfs.number_of_edges())
-        for t, (u, v) in zip(theta, graph_bfs.edges):
-            first_round.append((u, v))
-            ansatz.s(v)
-            ansatz.h(v)
-            ansatz.cx(u, v)
-            ansatz.rz(t, v)
-            ansatz.cx(u, v)
-            ansatz.h(v)
-            ansatz.sdg(v)
-
-        graph_copy = graph.copy()
-        for u, v in graph_bfs.edges:
-            graph_copy.remove_edge(u, v)
-        graph_copy.remove_nodes_from(list(nx.isolates(graph_copy)))
-        random_root = random.choice(list(graph_copy.nodes))
-        graph_copy_bfs = nx.bfs_tree(graph_copy, source=random_root)
-        phi = ParameterVector(fr"$\phi_{round}$", graph_copy_bfs.number_of_edges())
-        for p, (u, v) in zip(phi, graph_copy_bfs.edges):
-            first_round.append((u, v))
-            ansatz.s(v)
-            ansatz.h(v)
-            ansatz.cx(u, v)
-            ansatz.rz(p, v)
-            ansatz.cx(u, v)
-            ansatz.h(v)
-            ansatz.sdg(v)
-
-        eta = ParameterVector(fr"$\eta_{round}$", graph_bfs.number_of_edges())
-        for t, (u, v) in zip(eta, first_round):
-            ansatz.s(u)
-            ansatz.h(u)
-            ansatz.cx(v, u)
-            ansatz.rz(t, u)
-            ansatz.cx(v, u)
-            ansatz.h(u)
-            ansatz.sdg(u)
-
+    theta = ParameterVector(r"$\theta$", n_edges)
+    for t, (u, v) in zip(theta, graph.edges):
+        ansatz.s(v)
+        ansatz.h(v)
+        ansatz.cx(u, v)
+        ansatz.rz(t, v)
+        ansatz.cx(u, v)
+        ansatz.h(v)
+        ansatz.sdg(v)
+    theta_2 = ParameterVector(r"$\theta_2$", n_edges)
+    for t, (u, v) in zip(theta_2, graph.edges):
+        ansatz.s(u)
+        ansatz.h(u)
+        ansatz.cx(v, u)
+        ansatz.rz(t, u)
+        ansatz.cx(v, u)
+        ansatz.h(u)
+        ansatz.sdg(u)
     return ansatz
 
 def build_maxcut_hamiltonian(graph: nx.Graph) -> SparsePauliOp:
@@ -264,7 +240,7 @@ class QITEvolver:
 
             # Update parameters-- set up defining ODE and step forward
             Gmat, dvec, curr_energy = self.get_defining_ode(measurements)
-            dcurr_params = np.linalg.lstsq(Gmat, dvec, rcond=1e-2)[0]
+            dcurr_params = np.linalg.lstsq(Gmat, dvec)[0]
             curr_params += lr * dcurr_params
 
             # Progress checkpoint!
